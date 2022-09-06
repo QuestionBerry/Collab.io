@@ -2,7 +2,6 @@ from flask_app import app
 from flask import flash
 from flask_app.config.mysqlconnection import connectToMySQL
 import re 
-
 EMAIL_REGEX  = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
 
 class User:
@@ -69,23 +68,24 @@ class User:
         isValid = True
         if not data['username'] or not data['email'] or not data['password']:
             isValid = False
-            flash("All fields are required")
+            flash("All fields are required", "register")
         if len(data['username']) < 3:
             isValid = False
-            flash("Username must be at least three characters")
-        elif not User.readOneByUsername(data):
+            flash("Username must be at least three characters", "register")
+        elif User.readOneByUsername(data):
             isValid = False
-            flash("Username already registered")
+            flash("Username already registered", "register")
         if not EMAIL_REGEX.match(data['email']):
             isValid = False
-            flash("Invalid Email format")
-        elif not User.readOneByEmail(data):
+            flash("Invalid Email format", "register")
+        elif User.readOneByEmail(data):
             isValid = False
-            flash("Email already registered")
+            flash("Email already registered", "register")
         if len(data['password']) < 8:
             isValid = False
-            flash("Password must be at least 8 characters")
+            flash("Password must be at least 8 characters", "register")
         elif data['password'] != data['confirm']:
             isValid = False
-            flash("Passwords do not match.")
+            flash("Passwords do not match.", "register")
         return isValid
+    
