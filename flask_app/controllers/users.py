@@ -41,6 +41,7 @@ def login():
             return redirect('/register')
         else:
             session['user_id'] = user.id
+            session['username'] = user.username
             return redirect('/queues/clients')
 
 @app.route('/logout')
