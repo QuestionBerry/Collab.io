@@ -74,14 +74,17 @@ class Queue:
     @classmethod
     def readAllWithUsers(cls, data):
         query = ''
-        if data['type'] == 'client':
+        userType = data['type']
+        if userType == 'client':
             query = "SELECT * FROM queues LEFT JOIN users ON client_id = users.id WHERE artist_id = %(id)s;"
         else:
             query = "SELECT * FROM queues LEFT JOIN users ON artist_id = users.id WHERE client_id = %(id)s;"
 
         results = connectToMySQL(cls.db).query_db(query, data)
         allQueues = []
+
         for row in results:
+            print(userType)
             user_data = {
                 'id' : row['users.id'],
                 'username' : row['username'],
@@ -92,9 +95,9 @@ class Queue:
                 'updated_at' : row['users.updated_at']
             }
             queue = cls(row)
-            if data['type'] == 'client':
+            if userType == 'client':
                 queue.client = user.User(user_data)
-            elif data['type'] == 'artist':
+            elif userType == 'artist':
                 queue.artist = user.User(user_data)
             data = {
                 'id' : queue.id,
