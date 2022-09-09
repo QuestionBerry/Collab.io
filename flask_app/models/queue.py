@@ -18,6 +18,7 @@ class Queue:
         self.client = None
         self.lastPost = None
         self.lastStatus = None
+        self.response = None
 
     @classmethod
     def create(cls, data):
@@ -50,16 +51,14 @@ class Queue:
                 'updated_at' : results[0]['users.updated_at']
             }
             queue.client = user.User(client_data)
+            data = {
+                'id' : queue.id,
+                'artist_id' : queue.artist_id
+            }
+            queue.lastStatus = post.Post.getLastStatus(data)
+            data['last_status_id'] = queue.lastStatus.id
+            queue.response = post.Post.getLastResponse(data)
             return queue
-    
-    # @classmethod
-    # def readAll(cls):
-    #     query = "SELECT * FROM queues;"
-    #     results = connectToMySQL(cls.db).query_db(query)
-    #     queues = []
-    #     for row in results:
-    #         queues.append(cls(row))
-    #     return queues
 
     @classmethod
     def update(cls, data):
@@ -71,15 +70,19 @@ class Queue:
         query = "DELETE FROM queues WHERE id = %(id)s;"
         return connectToMySQL(cls.db).query_db(query, data)
 
-    #Pass in id of the artist and get all their clients w/ their queues
+    #Pass in id of the user and get all their queues of selected type
     @classmethod
-    def readAllWithClients(cls, data):
-        query = "SELECT * FROM queues LEFT JOIN users ON client_id = users.id WHERE artist_id = %(id)s;"
-        results = connectToMySQL(cls.db).query_db(query, data)
+    def readAllWithUsers(cls, data):
+        query = ''
+        if data['type'] == 'client':
+            query = "SELECT * FROM queues LEFT JOIN users ON client_id = users.id WHERE artist_id = %(id)s;"
+        else:
+            query = "SELECT * FROM queues LEFT JOIN users ON artist_id = users.id WHERE client_id = %(id)s;"
 
+        results = connectToMySQL(cls.db).query_db(query, data)
         allQueues = []
         for row in results:
-            client_data = {
+            user_data = {
                 'id' : row['users.id'],
                 'username' : row['username'],
                 'email' : row['email'],
@@ -89,49 +92,17 @@ class Queue:
                 'updated_at' : row['users.updated_at']
             }
             queue = cls(row)
-            queue.client = user.User(client_data)
+            if data['type'] == 'client':
+                queue.client = user.User(user_data)
+            elif data['type'] == 'artist':
+                queue.artist = user.User(user_data)
             data = {
-                'id' : queue.id
+                'id' : queue.id,
+                'artist_id' : queue.artist_id
             }
             queue.lastPost = post.Post.getLastPost(data)
             queue.lastStatus = post.Post.getLastStatus(data)
+            data['last_status_id'] = queue.lastStatus.id
+            queue.response = post.Post.getLastResponse(data)
             allQueues.append(queue)
-
         return allQueues
-
-    @classmethod
-    def readAllWithArtists(cls, data):
-        query = "SELECT * FROM queues LEFT JOIN users ON artist_id = users.id WHERE client_id = %(id)s;"
-        results = connectToMySQL(cls.db).query_db(query, data)
-
-        allQueues = []
-        for row in results:
-            artist_data = {
-                'id' : row['users.id'],
-                'username' : row['username'],
-                'email' : row['email'],
-                'password' : row['password'],
-                'avatar' : row['avatar'],
-                'created_at' : row['users.created_at'],
-                'updated_at' : row['users.updated_at']
-            }
-            queue = cls(row)
-            queue.artist = user.User(artist_data)
-            data = {
-                'id' : queue.id
-            }
-            queue.lastPost = post.Post.getLastPost(data)
-            queue.lastStatus = post.Post.getLastStatus(data)
-            allQueues.append(queue)
-
-        return allQueues
-
-
-    # @staticmethod
-    # def validate(data):
-    #     isValid = True
-    #     if len(data['description']) > 255:
-    #         isValid = False
-    #         flash ("Description too long")
-        
-    #     return isValid

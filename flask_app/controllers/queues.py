@@ -11,9 +11,10 @@ def client_queues():
     else:
         # Get all client queues, pass to render template,
         data = {
-            'id' : session['user_id']
+            'id' : session['user_id'],
+            'type' : 'client'
         }
-        queues = Queue.readAllWithClients(data)
+        queues = Queue.readAllWithUsers(data)
         return render_template('clients.html', queues=queues)
 
 @app.route('/queues/orders')
@@ -21,10 +22,12 @@ def order_queues():
     if 'user_id' not in session:
         return redirect('/')
     else:
+        # Get all order queues, pass to render template,
         data = {
-            'id' : session['user_id']
+            'id' : session['user_id'],
+            'type' : 'artist'
         }
-        queues = Queue.readAllWithArtists(data)
+        queues = Queue.readAllWithUsers(data)
         return render_template('orders.html', queues=queues)
 
 @app.route('/queues/new')

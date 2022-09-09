@@ -31,8 +31,8 @@
                         <tr>
                             <td>{{ queue.client.username }}</td>
                             <td>{{ queue.type }}</td>
-                            <td>{{ queue.lastStatus }}</td>
-                            <td></td>
+                            <td>{{ queue.lastStatus.status }}</td>
+                            <td>{{ queue.response }}</td>
                             <td>{{ queue.lastPost.updated_at }}</td>
                             <td><a href="/queues/view/{{ queue.id }}">View</a> | <a href="/queues/complete/{{ queue.id }}"><button>Complete</button></a></td>
                         </tr>

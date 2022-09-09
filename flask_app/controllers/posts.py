@@ -18,7 +18,6 @@ def view_queue(queue_id):
     }
     posts = Post.getAllPosts(data)
     queue = Queue.readOneWithClient(data)
-    
     return render_template('view_queue.html', posts=posts, queue=queue)
 
 @app.route('/queues/view/<int:queue_id>/post', methods=['POST'])

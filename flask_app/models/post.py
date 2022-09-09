@@ -50,13 +50,23 @@ class Post:
 
     @classmethod
     def getLastStatus(cls, data):
-        query = "SELECT * FROM posts WHERE queue_id = %(id)s ORDER BY created_at;"
+        query = "SELECT * FROM posts WHERE queue_id = %(id)s AND user_id = %(artist_id)s ORDER BY created_at;"
         results = connectToMySQL(cls.db).query_db(query, data)
         lastStatus = None
         for row in results:
             if row['status']:
-                lastStatus = row['status']
+                lastStatus = cls(row)
         return lastStatus
+
+    @classmethod
+    def getLastResponse(cls, data):
+        query = "SELECT status FROM posts WHERE queue_id = %(id)s AND id > %(last_status_id)s AND status != '' LIMIT 1;"
+        results = connectToMySQL(cls.db).query_db(query, data)
+        if not results:
+            return "Pending"
+        else:
+            return results[0]['status']
+        
 
     @classmethod
     def getAllPosts(cls, data):

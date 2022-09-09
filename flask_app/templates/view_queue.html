@@ -43,6 +43,7 @@
         <textarea name="content" cols="50" rows="5"></textarea>
         <input type="hidden" name="user_id" value="{{ session['user_id']}}">
         <label for="status">Change status:</label>
+        {% if queue.artist_id == session['user_id'] %}
         <input type="radio" name="status" id="thumbnail" value="Thumbnail">
         <label for="thumbnail">Thumbnail</label>
         <input type="radio" name="status" id="sketch" value="Sketch">
@@ -55,6 +56,14 @@
         <label for="complete">Complete</label>
         <label for="status">Custom Status:</label>
         <input type="text" name="status" id="custom" onclick="setCustomStatus()">
+        {% elif queue.response == 'Pending' %}
+        <input type="radio" name="status" id="approved" value="Approved">
+        <label for="approved">Approve</label>
+        <input type="radio" name="status" id="edit" value="Edit Requested">
+        <label for="edit">Request Edit</label>
+        {% else %}
+        <p>No status update</p>
+        {% endif %}
         <input type="hidden" name="status" value=""> 
         <input type="file" name="file" autocomplete="off">
         <button type="submit">Send</button>
