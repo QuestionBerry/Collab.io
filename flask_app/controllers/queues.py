@@ -16,6 +16,17 @@ def client_queues():
         queues = Queue.readAllWithClients(data)
         return render_template('clients.html', queues=queues)
 
+@app.route('/queues/orders')
+def order_queues():
+    if 'user_id' not in session:
+        return redirect('/')
+    else:
+        data = {
+            'id' : session['user_id']
+        }
+        queues = Queue.readAllWithArtists(data)
+        return render_template('orders.html', queues=queues)
+
 @app.route('/queues/new')
 def new_queue():
     if 'user_id' not in session:
@@ -33,6 +44,7 @@ def create_queue():
     }
     user = User.readOne(data)
     client = User.readOneByUsername(request.form)
+    print(client)
     if not client:
         flash('Username not found')
         return redirect('/queues/new')
@@ -50,11 +62,39 @@ def create_queue():
         # Automatically create a Post after making a queue
         first_post = {
             'content' : '',
-            'image_url' : '',
+            'image' : '',
             'status' : 'Created',
             'queue_id' : newQueue,
             'user_id' : user.id
         }
         Post.create(first_post)
         return redirect('/queues/clients')
+
+@app.route('/queues/complete/<int:queue_id>')
+def queue_complete(queue_id):
+    if 'user_id' not in session:
+        return redirect('/')
+    data = {
+            'content' : '',
+            'image_url' : '',
+            'status' : 'Complete',
+            'queue_id' : queue_id,
+            'user_id' : session['user_id']
+    }
+    Post.create(data)
+    return redirect('/queues/clients')
+
+@app.route('/queues/reopen/<int:queue_id>')
+def queue_reopen(queue_id):
+    if 'user_id' not in session:
+        return redirect('/')
+    data = {
+            'content' : '',
+            'image_url' : '',
+            'status' : 'Reopened',
+            'queue_id' : queue_id,
+            'user_id' : session['user_id']
+    }
+    Post.create(data)
+    return redirect('/queues/clients')
 

@@ -14,7 +14,8 @@ class Queue:
         self.updated_at = data['updated_at']
         self.artist_id = data['artist_id']
         self.client_id = data['client_id']
-        self.other_user = None
+        self.artist = None
+        self.client = None
         self.lastPost = None
         self.lastStatus = None
 
@@ -30,15 +31,35 @@ class Queue:
         if len(results) < 1:
             return False
         return cls(results[0])
-    
+
     @classmethod
-    def readAll(cls):
-        query = "SELECT * FROM queues;"
-        results = connectToMySQL(cls.db).query_db(query)
-        queues = []
-        for row in results:
-            queues.append(cls(row))
-        return queues
+    def readOneWithClient(cls, data):
+        query = "SELECT * FROM queues LEFT JOIN users ON client_id = users.id WHERE queues.id = %(id)s;"
+        results = connectToMySQL(cls.db).query_db(query, data)
+        if len(results) < 1:
+            return False
+        else:
+            queue = cls(results[0])
+            client_data = {
+                'id' : results[0]['users.id'],
+                'username' : results[0]['username'],
+                'email' : results[0]['email'],
+                'password' : results[0]['password'],
+                'avatar' : results[0]['avatar'],
+                'created_at' : results[0]['users.created_at'],
+                'updated_at' : results[0]['users.updated_at']
+            }
+            queue.client = user.User(client_data)
+            return queue
+    
+    # @classmethod
+    # def readAll(cls):
+    #     query = "SELECT * FROM queues;"
+    #     results = connectToMySQL(cls.db).query_db(query)
+    #     queues = []
+    #     for row in results:
+    #         queues.append(cls(row))
+    #     return queues
 
     @classmethod
     def update(cls, data):
@@ -53,23 +74,22 @@ class Queue:
     #Pass in id of the artist and get all their clients w/ their queues
     @classmethod
     def readAllWithClients(cls, data):
-        query = "SELECT * FROM queues LEFT JOIN users ON client_id = users.id WHERE artist_id = %(id)s"
+        query = "SELECT * FROM queues LEFT JOIN users ON client_id = users.id WHERE artist_id = %(id)s;"
         results = connectToMySQL(cls.db).query_db(query, data)
 
         allQueues = []
         for row in results:
             client_data = {
-                'id' : results[0]['users.id'],
-                'username' : results[0]['username'],
-                'email' : results[0]['email'],
-                'password' : results[0]['password'],
-                'avatar' : results[0]['avatar'],
-                'created_at' : results[0]['users.created_at'],
-                'updated_at' : results[0]['users.updated_at']
+                'id' : row['users.id'],
+                'username' : row['username'],
+                'email' : row['email'],
+                'password' : row['password'],
+                'avatar' : row['avatar'],
+                'created_at' : row['users.created_at'],
+                'updated_at' : row['users.updated_at']
             }
-            client = user.User(client_data)
             queue = cls(row)
-            queue.other_user = client
+            queue.client = user.User(client_data)
             data = {
                 'id' : queue.id
             }
@@ -79,7 +99,32 @@ class Queue:
 
         return allQueues
 
+    @classmethod
+    def readAllWithArtists(cls, data):
+        query = "SELECT * FROM queues LEFT JOIN users ON artist_id = users.id WHERE client_id = %(id)s;"
+        results = connectToMySQL(cls.db).query_db(query, data)
 
+        allQueues = []
+        for row in results:
+            artist_data = {
+                'id' : row['users.id'],
+                'username' : row['username'],
+                'email' : row['email'],
+                'password' : row['password'],
+                'avatar' : row['avatar'],
+                'created_at' : row['users.created_at'],
+                'updated_at' : row['users.updated_at']
+            }
+            queue = cls(row)
+            queue.artist = user.User(artist_data)
+            data = {
+                'id' : queue.id
+            }
+            queue.lastPost = post.Post.getLastPost(data)
+            queue.lastStatus = post.Post.getLastStatus(data)
+            allQueues.append(queue)
+
+        return allQueues
 
 
     # @staticmethod

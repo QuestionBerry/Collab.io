@@ -1,4 +1,5 @@
 from sqlite3 import connect
+from unittest import result
 from flask_app import app
 from flask import flash
 from flask_app.config.mysqlconnection import connectToMySQL
@@ -8,7 +9,7 @@ class Post:
     def __init__(self, data):
         self.id = data['id']
         self.content = data['content']
-        self.image_url = data['image_url']
+        self.image = data['image']
         self.read = data['read']
         self.status = data['status']
         self.created_at = data['created_at']
@@ -18,7 +19,7 @@ class Post:
     
     @classmethod
     def create(cls, data):
-        query = "INSERT INTO posts (content, image_url, status, queue_id, user_id) VALUES (%(content)s, %(image_url)s, %(status)s, %(queue_id)s, %(user_id)s);"
+        query = "INSERT INTO posts (content, image, status, queue_id, user_id) VALUES (%(content)s, %(image)s, %(status)s, %(queue_id)s, %(user_id)s);"
         return connectToMySQL(cls.db).query_db(query, data); #returns id of new entry
     
     @classmethod
@@ -31,7 +32,7 @@ class Post:
     
     @classmethod
     def update(cls, data):
-        query = "SET posts VALUES (content=%(content)s, image_url=%(image_url)s, read=%(read)s) WHERE id=%(id)s;"
+        query = "SET posts VALUES (content=%(content)s, image=%(image)s, read=%(read)s) WHERE id=%(id)s;"
         return connectToMySQL(cls.db).query_db(query, data)
     
     @classmethod
@@ -43,7 +44,8 @@ class Post:
     def getLastPost(cls, data):
         query = "SELECT * FROM posts WHERE queue_id = %(id)s ORDER BY created_at LIMIT 1;"
         results = connectToMySQL(cls.db).query_db(query, data)
-        print(results[0])
+        if len(results) < 1:
+            return False
         return cls(results[0])
 
     @classmethod
