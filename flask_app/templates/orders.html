@@ -13,15 +13,14 @@
         <div> 
             <!-- top half of queues -->
             <div>
-                <h2>Active Client Queues</h2>
-                <a href="/queues/new"><button>Create Queue</button></a>
+                <h2>Active Orders</h2>
             </div>
             <table>
                 <thead>
-                    <th>Username</th>
+                    <th>Artist</th>
                     <th>Type</th>
                     <th>Last Status</th>
-                    <th>Response</th>
+                    <th>Your Response</th>
                     <th>Last Updated</th>
                     <th>Actions</th>
                 </thead>
@@ -29,12 +28,12 @@
                     {% for queue in queues %}
                         {% if queue.lastStatus != 'Complete'  %}
                         <tr>
-                            <td>{{ queue.client.username }}</td>
+                            <td>{{ queue.artist.username }}</td>
                             <td>{{ queue.type }}</td>
                             <td>{{ queue.lastStatus }}</td>
                             <td></td>
                             <td>{{ queue.lastPost.updated_at }}</td>
-                            <td><a href="/queues/view/{{ queue.id }}">View</a> | <a href="/queues/complete/{{ queue.id }}"><button>Complete</button></a></td>
+                            <td><a href="/queues/view/{{ queue.id }}">View</a> | </td>
                         </tr>
                         {% endif %}
                     {% endfor %}
@@ -43,10 +42,10 @@
         </div>
         <div>
             <!-- bottom half -->
-            <h2>Completed Client Queues</h2>
+            <h2>Completed Orders</h2>
             <table>
                 <thead>
-                    <th>Username</th>
+                    <th>Artist</th>
                     <th>Type</th>
                     <th>Completed On</th>
                     <th>Actions</th>
@@ -55,10 +54,10 @@
                     {% for queue in queues %}
                         {% if queue.lastStatus == "Complete" %}
                             <tr>
-                                <td>{{ queue.client.username }}</td>
+                                <td>{{ queue.artist.username }}</td>
                                 <td>{{ queue.type }}</td>
                                 <td>{{ queue.lastPost.created_at }}</td>
-                                <td><a href="/queues/view/{{ queue.id }}">View</a> | <a href="/queues/reopen/{{ queue.id }}">Reopen</a></td>
+                                <td><a href="/queues/view/{{ queue.id }}">View</a></td>
                             </tr>
                         {% endif %}
                     {% endfor %}

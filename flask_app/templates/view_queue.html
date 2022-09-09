@@ -12,22 +12,36 @@
 
     <div>
         {% for post in posts %}
-            {% if post.image_url %}
-                <img src="{{ post.image_url }}" alt="">
-            {% endif %}
-            {% if post.content %}
-            <p>{{ post.content }}</p>
-            {% endif %}
-            {% if post.status %}
-                <p>Status changed to {{ post.status }}</p>
-            {% endif %}
+            <div>
+                {% if post.user_id == session['user_id'] %}
+                    <p>{{ session['username'] }}</p>
+                {% endif %}
+                {% if post.image %}
+                    <img src="{{ url_for( 'static', filename='uploads/' + post.image) }}" alt="">
+                {% endif %}
+                {% if post.content %}
+                    <p>{{ post.content }}</p>
+                {% endif %}
+                {% if post.user_id == queue.client_id %}
+                    <p>{{ queue.client.username }}</p>
+                {% endif %}
+
+                {% if post.status %}
+                    <p>Status changed to {{ post.status }}</p>
+                {% endif %}
+            </div>
         {% endfor %}
     </div>
-
-    <form action="/queues/view/{{ queue_id }}/post" method="POST">
+    {% with messages = get_flashed_messages()  %}
+        {% if messages %}
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    <form action="/queues/view/{{ queue.id }}/post" method="POST" enctype="multipart/form-data">
         <textarea name="content" cols="50" rows="5"></textarea>
         <input type="hidden" name="user_id" value="{{ session['user_id']}}">
-        <input type="hidden" name="queue_id" value="{{ queue_id }}">
         <label for="status">Change status:</label>
         <input type="radio" name="status" id="thumbnail" value="Thumbnail">
         <label for="thumbnail">Thumbnail</label>
@@ -39,12 +53,14 @@
         <label for="WIP">WIP</label>
         <input type="radio" name="status" id="complete"  value="Complete">
         <label for="complete">Complete</label>
-        <!-- Figure out how to upload images here -->
-        <input type="hidden" name="image_url" value="">
-        
+        <label for="status">Custom Status:</label>
+        <input type="text" name="status" id="custom" onclick="setCustomStatus()">
+        <input type="hidden" name="status" value=""> 
+        <input type="file" name="file" autocomplete="off">
         <button type="submit">Send</button>
     </form>
 
+    <script src="{{ url_for('static', filename='view_queue.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
 </body>
 </html>
