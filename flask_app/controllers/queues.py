@@ -101,3 +101,13 @@ def queue_reopen(queue_id):
     Post.create(data)
     return redirect('/queues/clients')
 
+@app.route('/queues/delete/<int:queue_id>')
+def queue_delete(queue_id):
+    if 'user_id' not in session:
+        return redirect('/')
+    data = {
+        'id' : queue_id
+    }
+    Post.deleteAllByQueue(data)
+    Queue.delete(data)
+    return redirect('/queues/clients')

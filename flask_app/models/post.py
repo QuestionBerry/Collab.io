@@ -41,6 +41,11 @@ class Post:
         return connectToMySQL(cls.db).query_db(query, data)
 
     @classmethod
+    def deleteAllByQueue(cls,data):
+        query = "DELETE FROM posts WHERE queue_id = %(id)s;"
+        return connectToMySQL(cls.db).query_db(query, data)
+
+    @classmethod
     def getLastPost(cls, data):
         query = "SELECT * FROM posts WHERE queue_id = %(id)s ORDER BY created_at LIMIT 1;"
         results = connectToMySQL(cls.db).query_db(query, data)
