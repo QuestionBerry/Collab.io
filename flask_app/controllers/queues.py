@@ -79,7 +79,7 @@ def queue_complete(queue_id):
         return redirect('/')
     data = {
             'content' : '',
-            'image_url' : '',
+            'image' : '',
             'status' : 'Complete',
             'queue_id' : queue_id,
             'user_id' : session['user_id']
@@ -93,7 +93,7 @@ def queue_reopen(queue_id):
         return redirect('/')
     data = {
             'content' : '',
-            'image_url' : '',
+            'image' : '',
             'status' : 'Reopened',
             'queue_id' : queue_id,
             'user_id' : session['user_id']

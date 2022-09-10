@@ -9,34 +9,34 @@
 </head>
 <body>
     {% include 'menu.html' %}
-    <div>
+    <div class="queue-tables">
         <div> 
             <!-- top half of queues -->
-            <div>
+            <div class="d-flex justify-content-between">
                 <h2>Active Client Queues</h2>
-                <a href="/queues/new"><button>Create Queue</button></a>
+                <a href="/queues/new"><button class="btn btn-light">Create Queue</button></a>
             </div>
-            <table>
+            <table class="table table-dark table-hover" id="topTable">
                 <thead>
-                    <th>Username</th>
-                    <th>Type</th>
-                    <th>Last Status</th>
-                    <th>Response</th>
-                    <th>Last Updated</th>
+                    <th onclick="sortTable(0)">Username</th>
+                    <th onclick="sortTable(1)">Type</th>
+                    <th onclick="sortTable(2)">Last Status</th>
+                    <th onclick="sortTable(3)">Response</th>
+                    <th onclick="sortTable(4)">Last Updated</th>
                     <th>Actions</th>
                 </thead>
                 <tbody>
                     {% for queue in queues %}
-                        {% if queue.lastStatus != 'Complete'  %}
+                        {% if queue.lastStatus.status != 'Complete'  %}
                         <tr>
-                            <td>{{ queue.client.username }}</td>
+                            <td id="username">{{ queue.client.username }}</td>
                             <td>{{ queue.type }}</td>
                             <td>{{ queue.lastStatus.status }}</td>
-                            <td>{{ queue.response }}</td>
+                            <td><i>{{ queue.response }}</i></td>
                             <td>{{ queue.lastPost.updated_at }}</td>
-                            <td><a href="/queues/view/{{ queue.id }}">View</a> |
-                                <button onClick="deleteQueue({{ queue.id }})">Delete</button>
-                                <a href="/queues/complete/{{ queue.id }}"><button>Complete</button></a></td>
+                            <td><a href="/queues/view/{{ queue.id }}"><button class="btn btn-dark">View</button></a> |
+                                <button class="btn btn-dark" onClick="deleteQueue({{ queue.id }})">Delete</button> |
+                                <a href="/queues/complete/{{ queue.id }}"><button class="btn btn-dark">Complete</button></a></td>
                         </tr>
                         {% endif %}
                     {% endfor %}
@@ -46,7 +46,7 @@
         <div>
             <!-- bottom half -->
             <h2>Completed Client Queues</h2>
-            <table>
+            <table class="table table-dark table-striped">
                 <thead>
                     <th>Username</th>
                     <th>Type</th>
@@ -55,12 +55,12 @@
                 </thead>
                 <tbody>
                     {% for queue in queues %}
-                        {% if queue.lastStatus == "Complete" %}
+                        {% if queue.lastStatus.status == "Complete" %}
                             <tr>
                                 <td>{{ queue.client.username }}</td>
                                 <td>{{ queue.type }}</td>
                                 <td>{{ queue.lastPost.created_at }}</td>
-                                <td><a href="/queues/view/{{ queue.id }}">View</a> | <a href="/queues/reopen/{{ queue.id }}">Reopen</a></td>
+                                <td><a href="/queues/view/{{ queue.id }}"><button class="btn btn-dark">View</button></a> | <a href="/queues/reopen/{{ queue.id }}"><button class="btn btn-dark">Reopen</button></a></td>
                             </tr>
                         {% endif %}
                     {% endfor %}
@@ -68,7 +68,7 @@
             </table>
         </div>
     </div>
-    <script src="{{ url_for('static', filename='scripts/delete.js')}}"></script>
+    <script src="{{ url_for('static', filename='scripts/queueFunctions.js')}}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
 </body>
 </html>

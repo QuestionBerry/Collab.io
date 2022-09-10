@@ -84,7 +84,6 @@ class Queue:
         allQueues = []
 
         for row in results:
-            print(userType)
             user_data = {
                 'id' : row['users.id'],
                 'username' : row['username'],

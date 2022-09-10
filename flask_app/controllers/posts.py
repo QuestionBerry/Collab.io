@@ -34,7 +34,7 @@ def new_post(queue_id):
         'queue_id' : queue_id,
         'user_id' : request.form['user_id']
     }
-    if data['content'] == '' and data['status'] == '':
+    if data['content'] == '' and data['status'] == '' and not file:
         flash('Make a comment, change a status or upload an image to post.')
         return redirect('/queues/view/' + str(queue_id))
 

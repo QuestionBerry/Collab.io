@@ -9,65 +9,83 @@
 </head>
 <body>
     {% include 'menu.html' %}
+    <div class="posts-view">
+        <div>
+            {% for post in posts %}
+                <div >
+                    {% if post.user_id == session['user_id'] %}
+                        <p>{{ session['username'] }}</p>
+                    {% endif %}
+                    {% if post.image %}
+                        <img src="{{ url_for( 'static', filename='uploads/' + post.image) }}" alt="user uploaded image" class="post-image">
+                    {% endif %}
+                    {% if post.content %}
+                        <p>{{ post.content }}</p>
+                    {% endif %}
+                    {% if post.user_id == queue.client_id %}
+                        <p>{{ queue.client.username }}</p>
+                    {% endif %}
 
-    <div>
-        {% for post in posts %}
-            <div>
-                {% if post.user_id == session['user_id'] %}
-                    <p>{{ session['username'] }}</p>
-                {% endif %}
-                {% if post.image %}
-                    <img src="{{ url_for( 'static', filename='uploads/' + post.image) }}" alt="">
-                {% endif %}
-                {% if post.content %}
-                    <p>{{ post.content }}</p>
-                {% endif %}
-                {% if post.user_id == queue.client_id %}
-                    <p>{{ queue.client.username }}</p>
-                {% endif %}
-
-                {% if post.status %}
-                    <p>Status changed to {{ post.status }}</p>
-                {% endif %}
-            </div>
-        {% endfor %}
-    </div>
-    {% with messages = get_flashed_messages()  %}
-        {% if messages %}
-            {% for message in messages %}
-                <p>{{ message }}</p>
+                    {% if post.status %}
+                        <p class="fs-6"><i>Status changed to {{ post.status }}</i></p>
+                    {% endif %}
+                </div>
             {% endfor %}
-        {% endif %}
-    {% endwith %}
-    <form action="/queues/view/{{ queue.id }}/post" method="POST" enctype="multipart/form-data">
-        <textarea name="content" cols="50" rows="5"></textarea>
-        <input type="hidden" name="user_id" value="{{ session['user_id']}}">
-        <label for="status">Change status:</label>
-        {% if queue.artist_id == session['user_id'] %}
-        <input type="radio" name="status" id="thumbnail" value="Thumbnail">
-        <label for="thumbnail">Thumbnail</label>
-        <input type="radio" name="status" id="sketch" value="Sketch">
-        <label for="sketch">Sketch</label>
-        <input type="radio" name="status" id="lineart" value="Lineart">
-        <label for="lineart">Lineart</label>
-        <input type="radio" name="status" id="WIP" value="WIP">
-        <label for="WIP">WIP</label>
-        <input type="radio" name="status" id="complete"  value="Complete">
-        <label for="complete">Complete</label>
-        <label for="status">Custom Status:</label>
-        <input type="text" name="status" id="custom" onclick="setCustomStatus()">
-        {% elif queue.response == 'Pending' %}
-        <input type="radio" name="status" id="approved" value="Approved">
-        <label for="approved">Approve</label>
-        <input type="radio" name="status" id="edit" value="Edit Requested">
-        <label for="edit">Request Edit</label>
-        {% else %}
-        <p>No status update</p>
-        {% endif %}
-        <input type="hidden" name="status" value=""> 
-        <input type="file" name="file" autocomplete="off">
-        <button type="submit">Send</button>
-    </form>
+        </div>
+        <div class='border-top pt-3'>
+            {% with messages = get_flashed_messages()  %}
+                {% if messages %}
+                    {% for message in messages %}
+                        <p class="text-warning">{{ message }}</p>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            <form action="/queues/view/{{ queue.id }}/post" method="POST" enctype="multipart/form-data" class="post">
+                <textarea name="content" cols="60" rows="5"></textarea>
+                <input type="hidden" name="user_id" value="{{ session['user_id']}}">
+                <div class='d-flex flex-column align-items-center'>
+                    <label for="status">Change status:</label>
+                    {% if queue.artist_id == session['user_id'] %}
+                        <div class='d-flex'>
+                            <div class="m-1">
+                                <input type="radio" name="status" id="thumbnail" value="Thumbnail">
+                                <label for="thumbnail">Thumbnail</label><br>
+                                <input type="radio" name="status" id="sketch" value="Sketch">
+                                <label for="sketch">Sketch</label><br>
+                                <input type="radio" name="status" id="lineart" value="Lineart">
+                                <label for="lineart">Lineart</label><br>
+                            </div>
+                            <div class="m-1">
+                                <input type="radio" name="status" id="WIP" value="WIP">
+                                <label for="WIP">WIP</label><br>
+                                <input type="radio" name="status" id="complete"  value="Complete">
+                                <label for="complete">Complete</label>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="status">Custom:</label><br>
+                            <input type="text" name="status" id="custom" onclick="setCustomStatus()">
+                        </div>
+                    {% elif queue.response == 'Pending' %}
+                        <div>
+                            <input type="radio" name="status" id="approved" value="Approved">
+                            <label for="approved">Approve</label>
+                            <input type="radio" name="status" id="edit" value="Edit Requested">
+                            <label for="edit">Request Edit</label>
+                        </div>
+                    {% else %}
+                        <p>No status update</p>
+                    {% endif %}
+                </div>
+                <input type="hidden" name="status" value=""> 
+                <div class="d-flex flex-column align-items-center justify-content-between">
+                    <label for="file">Upload an image</label>
+                    <input type="file" name="file" autocomplete="off">
+                    <button type="submit" class="btn btn-success">Send</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <script src="{{ url_for('static', filename='view_queue.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
