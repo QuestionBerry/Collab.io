@@ -22,6 +22,14 @@ body {
     padding: 3%;
 }
 
+#queue_form {
+    display: none;
+}
+
+#queue_button {
+    height:35px;
+}
+
 #sitename {
     font-family: 'Lobster Two', cursive;
     font-size:40px;

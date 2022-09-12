@@ -30,13 +30,6 @@ def order_queues():
         queues = Queue.readAllWithUsers(data)
         return render_template('orders.html', queues=queues)
 
-@app.route('/queues/new')
-def new_queue():
-    if 'user_id' not in session:
-        return redirect('/')
-    else:
-        return render_template('new_queue.html')
-
 @app.route('/queues/new/create', methods=['POST'])
 def create_queue():
     if 'user_id' not in session:
@@ -50,10 +43,10 @@ def create_queue():
     print(client)
     if not client:
         flash('Username not found')
-        return redirect('/queues/new')
+        return redirect('/queues/clients')
     elif client.id == user.id:
         flash('Cannot create queue with self')
-        return redirect('/queues/new')
+        return redirect('/queues/clients')
     else:
         queue_data = {
             'description' : request.form['description'],

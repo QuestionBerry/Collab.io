@@ -10,7 +10,7 @@
 <body>
     {% include 'menu.html' %}
     <div class="posts-view">
-        <div>
+        <div class="scrollbar scrollbar-morpheus-den" style="overflow:auto">
             {% for post in posts %}
                 <div >
                     {% if post.user_id == session['user_id'] %}

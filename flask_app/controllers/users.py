@@ -24,21 +24,21 @@ def create_user():
         session['user_id'] = User.create(data)
         return redirect('/queues/clients')
     else:
-        return redirect('/register')
+        return redirect('/')
 
 @app.route('/login', methods=['POST'])
 def login():
     user = User.readOneByUsername(request.form)
     if not user:
         flash('Username not found', 'login')
-        return redirect('/register')
+        return redirect('/')
     if not request.form['password']:
         flash('Enter Password', 'login')
-        return redirect('/register')
+        return redirect('/')
     else:
         if not bcrypt.check_password_hash(user.password, request.form['password']):
             flash('Incorrect Password', 'login')
-            return redirect('/register')
+            return redirect('/')
         else:
             session['user_id'] = user.id
             session['username'] = user.username

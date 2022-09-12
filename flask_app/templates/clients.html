@@ -12,10 +12,31 @@
     <div class="queue-tables">
         <div> 
             <!-- top half of queues -->
-            <div class="d-flex justify-content-between">
-                <h2>Active Client Queues</h2>
-                <a href="/queues/new"><button class="btn btn-light">Create Queue</button></a>
+            <div class="d-flex justify-content-end">
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        {% for message in messages %}
+                            <p>{{ message }}</p>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
             </div>
+            <div class="d-flex justify-content-between align-items-center">
+                <h2>Active Client Queues</h2>
+                <button class="btn btn-light" id="queue_button" onClick="newQueue()">Create Queue</button>
+            </div>
+            <div id="queue_form">
+                <form class="d-flex p-2 justify-content-end align-items-center" action="/queues/new/create" method="POST">
+                    <label for="username" class="m-1">Client Username</label>
+                    <input type="text" name="username" class="m-1">
+                    <label for="type" class="m-1">Type</label>
+                    <input type="text" name="type" value="" class="m-1">
+                    <label for="description" class="m-1">Description</label>
+                    <input type="text" name="description" value="" class="m-1">
+                    <button type="submit" class="btn btn-dark m-1">Submit</button>
+                </form>
+            </div>
+
             <table class="table table-dark table-hover" id="topTable">
                 <thead>
                     <th onclick="sortTable(0)">Username</th>

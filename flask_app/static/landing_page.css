@@ -31,3 +31,24 @@ h2{
     font-size:2em;
     font-style: italic;
 }
+
+#login {
+    height: 0px;
+    opacity: 0;
+    transition: all 0.5s;
+}
+
+#submitBtn {
+    height:50px;
+
+}
+
+#register {
+    height: 0px;
+    opacity: 0;
+    transition: all 0.5s;
+}
+
+.details {
+    font-size:large;
+}
