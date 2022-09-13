@@ -1,17 +1,16 @@
 body {
-    background-color: slategray;
+    background-color: #0B0C10;
     width: 100vw;
     height: 100vh;
     font-family: 'Archivo', sans-serif;
-    color: #fff;
+    color: #C5C6C7;
     display: flex;
     justify-content: space-between;
 }
 
 #menu{
-    background-color: darkslategray;
+    background-color: #1F2833;
     height: 100vh;
-    
     min-width: 225px;
     padding: 3vh;
 }
@@ -33,6 +32,7 @@ body {
 #sitename {
     font-family: 'Lobster Two', cursive;
     font-size:40px;
+    color: #66FCF1;
 }
 
 .material-symbols-outlined {
@@ -46,7 +46,7 @@ body {
 
 .bi-easel2-fill{
     font-size:3rem;
-    color:white;
+    color:White;
 }
 
 .posts-view{
@@ -62,13 +62,27 @@ th, #username{
     font-size:large;
 }
 
-.post {
-    display:flex;
-    justify-content: space-between;
-    width: 100%;
+.btn-neon{
+    background-color: #0B0C10;
+    color: #C5C6C7;
+    border: 2px solid #45A29E;
 }
 
-.post-image{
-    max-width: 100%;
-    max-height:50vh;
+span {
+    color:#66FCF1;
+}
+
+h2 {
+    color:#45A29E;
+}
+
+td{
+    color:#C5C6C7;
+}
+
+textarea, input {
+    background-color:#1F2833;
+    color:#C5C6C7;
+    border:1px solid #66FCF1;
+    border-radius: 5px;
 }

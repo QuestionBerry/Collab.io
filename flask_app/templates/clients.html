@@ -22,8 +22,8 @@
                 {% endwith %}
             </div>
             <div class="d-flex justify-content-between align-items-center">
-                <h2>Active Client Queues</h2>
-                <button class="btn btn-light" id="queue_button" onClick="newQueue()">Create Queue</button>
+                <h2>Active <span>Client</span> Queues</h2>
+                <button class="btn btn-neon" id="queue_button" onClick="newQueue()">Create Queue</button>
             </div>
             <div id="queue_form">
                 <form class="d-flex p-2 justify-content-end align-items-center" action="/queues/new/create" method="POST">
@@ -66,8 +66,8 @@
         </div>
         <div>
             <!-- bottom half -->
-            <h2>Completed Client Queues</h2>
-            <table class="table table-dark table-striped">
+            <h2>Completed <span>Client</span> Queues</h2>
+            <table class="table table-dark table-hover">
                 <thead>
                     <th>Username</th>
                     <th>Type</th>
